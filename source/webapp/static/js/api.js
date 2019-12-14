@@ -42,6 +42,7 @@ function logIn(username, password) {
     request.done(function(data, status, response) {
         console.log('Received token');
         saveToken(data.token);
+        checkAuth()
     }).fail(function(response, status, message) {
         console.log('Could not get token');
         console.log(response);
@@ -77,6 +78,17 @@ function setUpGlobalVars() {
 }
 
 
+function checkAuth() {
+    let token = getToken();
+    if(token) {
+        enterLink.addClass('d-none');
+        exitLink.removeClass('d-none');
+    } else {
+        enterLink.removeClass('d-none');
+        exitLink.addClass('d-none');
+    }
+}
+
 function setUpAuth() {
     logInForm.on('submit', function(event) {
         event.preventDefault();
@@ -92,6 +104,7 @@ function setUpAuth() {
         formSubmit.off('click');
         formSubmit.on('click', function(event) {
             logInForm.submit();
+            formModal.modal("hide");
         });
     });
 
@@ -99,17 +112,6 @@ function setUpAuth() {
         event.preventDefault();
         logOut();
     });
-}
-
-function checkAuth() {
-    let token = getToken();
-    if(token) {
-        enterLink.addClass('d-none');
-        exitLink.removeClass('d-none');
-    } else {
-        enterLink.removeClass('d-none');
-        exitLink.addClass('d-none');
-    }
 }
 
 
