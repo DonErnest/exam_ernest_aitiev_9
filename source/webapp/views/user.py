@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render
 
 class UserLoginView(LoginView):
     template_name = 'login.html'
+    success_url = 'webapp:main_page'
 
 # def login_view(request):
 #     context={}

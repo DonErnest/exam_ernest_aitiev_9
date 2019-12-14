@@ -66,6 +66,8 @@ function setUpLikeAdd() {
         makeRequest('likes/', 'post', data).done (function(data, status, response) {
         console.log('Like added');
         getLikesTotal();
+        console.log(data)
+        likeAdded.val(data.id)
 
     }).fail(function(response, status, message) {
         console.log('Could not like');
@@ -80,11 +82,7 @@ function setUpLikeAdd() {
 function setUpRemoveLike() {
     removeLike.on('click', function(event) {
         event.preventDefault();
-        data = {
-            'user': commentAuthor.val(),
-            'photo': image.attr('data-info')
-        };
-        makeRequest(`likes/${image.attr('data-info')}`, 'delete', data).done (function(data, status, response) {
+        makeRequest(`likes/${likeAdded.val()}`, 'delete').done (function(data, status, response) {
             console.log('Like removed');
             getLikesTotal();
 
@@ -92,12 +90,12 @@ function setUpRemoveLike() {
             console.log('Could not remove like');
             console.log(response);
         });
-        checkLike();
+        // checkLike();
     })
 }
 
 function getLikesTotal() {
-    let likesList = makeRequest('likes', 'get').done(function (data, status, response) {
+    let likesList = makeRequest(`likes/?photo=${image.attr('data-info')}`, 'get').done(function (data, status, response) {
         console.log('List of likes received');
         console.log(likesList);
         likesTotal.text(data.length);
@@ -151,7 +149,7 @@ function setUpDeleteComment(){
 
 
 
-let commentModal, commentText, commentAuthor, commentAdd, commentList, commentPhoto, image, likesTotal, dislikesTotal, addLike, removeLike;
+let commentModal, commentText, commentAuthor, commentAdd, commentList, commentPhoto, image, likesTotal, likeAdded, dislikesTotal, addLike, removeLike;
 
 function setUpGlobalVars() {
     image = $('#photo');
@@ -163,6 +161,7 @@ function setUpGlobalVars() {
     likesTotal = $('#likesTotal');
     dislikesTotal = $('#dislikesTotal');
     addLike = $('#addLike');
+    likeAdded = $('#likeAdded')
     removeLike = $('#removeLike');
     commentList = $('#commentsList');
 }

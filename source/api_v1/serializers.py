@@ -13,7 +13,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
-        fields = ('photo', 'user')
+        fields = ('id','photo', 'user')
 
 
 

@@ -16,7 +16,11 @@
             <div class="btn-group">
 
                 <button class="btn btn-outline-danger" id ="addLike"><i class="fas fa-heart"></i></button>
-
+                {% if photo.likes_received %}
+                <input type="hidden" id="likeAdded" value="{{ photo.likes_received.first.id }}">
+                {% else %}
+                     <input type="hidden" id="likeAdded">
+                {% endif %}
                 <button class="btn btn-danger" id="removeLike"><i class="fas fa-thumbs-down"></i></button>
                 <span id="likesTotal" class="btn btn-danger disabled">{{ photo.likes }}</span>
             </div>
@@ -34,7 +38,6 @@
                 {% for comment in photo.comments.all %}
                     <div class="list-group-item">
                         <div class="d-flex w-100 justify-content-between">
-{#                            <span hidden id="commentId_{{ comment.id }}">{{ comment.id }}</span>#}
 
                             <h5 class="mb-1">{{ comment.author }}</h5>
                             <small>{{ comment.added }}</small>
