@@ -13,8 +13,8 @@ class Photo(models.Model):
 
 class Comment(models.Model):
     text = models.TextField(max_length=300, null=False, blank=False, verbose_name='Комментарий')
-    photo = models.ForeignKey('webapp.Photo', null=False, on_delete=models.CASCADE, blank=False, verbose_name='Фотография')
-    author = models.ForeignKey(User, null=False,blank=False, on_delete=models.CASCADE, verbose_name='Автор комментария')
+    photo = models.ForeignKey('webapp.Photo', null=False, related_name='comments', on_delete=models.CASCADE, blank=False, verbose_name='Фотография')
+    author = models.ForeignKey(User, null=False,blank=False, related_name='comments', on_delete=models.CASCADE, verbose_name='Автор комментария')
     added = models.DateTimeField(auto_now_add=True, verbose_name='Добавлено')
 
     def __str__(self):

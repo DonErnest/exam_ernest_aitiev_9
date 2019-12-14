@@ -4,6 +4,22 @@ from rest_framework.views import APIView
 from api_v1.serializers import UserSerializer
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class RegisterView(APIView):
     permission_classes = []
 

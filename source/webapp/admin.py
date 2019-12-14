@@ -9,7 +9,7 @@ class PhotoAdmin(admin.ModelAdmin):
     list_display_links = ['id', 'description']
     list_filter = ['author']
     search_fields = ['description', 'author']
-    fields = ['id', 'photo', 'description', 'author', 'likes', 'created_at']
+    fields = ['photo', 'description', 'author', 'likes', 'created_at']
     readonly_fields = ['created_at']
 
 class CommentAdmin(admin.ModelAdmin):
@@ -17,7 +17,7 @@ class CommentAdmin(admin.ModelAdmin):
     list_display_links = ['id', 'text']
     list_filter = ['author', 'photo']
     search_fields = ['text', 'author']
-    fields = ['id', 'text', 'photo', 'author', 'added']
+    fields = ['text', 'photo', 'author', 'added']
     readonly_fields = ['added']
 
 admin.site.register(Photo, PhotoAdmin)

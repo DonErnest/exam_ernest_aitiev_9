@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Удаление фото{% endblock %}
+{% block content %}
+    <div class = "d-flex flex-column justify-content-center pt-5 pb-5">
+        <h1>Удаление фотографии</h1>
+        <h2><strong>Описание фотографии:</strong> {{ photo.description }}</h2>
+        <h5>Вы уверены, что хотите удалить выбранную задачу?</h5>
+        <form method="POST" action="{% url 'webapp:delete task' photo.pk %}">
+            {% csrf_token %}
+            <div class = "btn-group pl-5">
+                <input type="submit" class  = 'btn btn-outline-warning' value="Confirm">
+                <a type="submit" class  = 'btn btn-outline-warning' href="{% url 'webapp:photo_detailed' photo.pk %}">Cancel</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

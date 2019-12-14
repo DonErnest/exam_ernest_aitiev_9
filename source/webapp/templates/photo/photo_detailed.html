@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}
+    Просмотр
+{% endblock %}
+{% block menu_links %}
+    {% if request.user.is_authenticated %}
+        <li class="nav-item">
+            <a href="{% url 'webapp:photo_edit' photo.pk %}" class="nav-link">Редактировать фото</a>
+        </li>
+    {% endif %}
+{% endblock %}
+{% block content %}
+    <div class="card text-center">
+        <img src="{{ photo.photo.url }}" style="width:50%" class="card-img-top ml-auto mr-auto" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">Добавлено: {{ photo.author }},  {{ photo.created_at }}</h5>
+            <p class="card-text"><strong>Описание: </strong>{{ photo.description }}</p>
+        </div>
+        <div class="ml-auto mr-auto card-footer w-50">
+            <div class="list-group ">
+                {% for comment in photo.comments.all %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ comment.author }}</h5>
+                            <small>{{ comment.added }}</small>
+                        </div>
+                        <p class="mb-1 text-left">{{ comment.text }}</p>
+                    </div>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
