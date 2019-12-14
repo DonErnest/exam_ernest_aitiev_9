@@ -1,26 +1,19 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
+from webapp.models import Comment, Photo, Like
 
 
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields= ('text', 'photo', 'author')
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = ('photo', 'user')
 
 
 

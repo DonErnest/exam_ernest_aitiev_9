@@ -1,4 +1,6 @@
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -16,11 +18,6 @@ class PhotoDetailedView(DetailView):
     model = Photo
     template_name = 'photo/photo_detailed.html'
 
-    # def get_context_data(self, **kwargs):
-    #     context = super(PhotoDetailedView, self).get_context_data()
-    #     context['comments'] = self.object.comments.all()
-    #     return context
-
 
 class PhotoCreateView(CreateView):
     model = Photo
@@ -35,6 +32,10 @@ class PhotoCreateView(CreateView):
                                            description=form.cleaned_data['description'])
         return HttpResponseRedirect(self.get_success_url())
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('webapp:login')
+        return super(PhotoCreateView, self).dispatch(request, *args, **kwargs)
 
 class PhotoUpdateView(UpdateView):
     model = Photo
@@ -44,6 +45,11 @@ class PhotoUpdateView(UpdateView):
     def get_success_url(self):
         return reverse('webapp:photo_detailed', kwargs={'pk': self.object.pk})
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.has_perm('webapp.change_photo') or self.object.author != request.user:
+            raise PermissionDenied('403 Forbidden')
+        return super(PhotoUpdateView, self).dispatch(request, *args, **kwargs)
+
 class PhotoDeleteView(DeleteView):
     model = Photo
     template_name = 'photo/photo_delete.html'
@@ -51,3 +57,7 @@ class PhotoDeleteView(DeleteView):
     def get_success_url(self):
         return reverse('webapp:main_page')
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.has_perm('webapp.delete_photo') or self.object.author != request.user:
+            raise PermissionDenied('403 Forbidden')
+        return super(PhotoDeleteView, self).dispatch(request, *args, **kwargs)

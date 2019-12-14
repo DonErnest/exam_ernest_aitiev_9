@@ -11,23 +11,67 @@
 {% endblock %}
 {% block content %}
     <div class="card text-center">
-        <img src="{{ photo.photo.url }}" style="width:50%" class="card-img-top ml-auto mr-auto" alt="...">
+        <img src="{{ photo.photo.url }}" style="width:50%" class="card-img-top ml-auto mr-auto" alt="..." id="photo" data-info="{{ photo.pk }}">
+        <div class="row justify-content-center">
+            <div class="btn-group">
+
+                <button class="btn btn-outline-danger" id ="addLike"><i class="fas fa-heart"></i></button>
+
+                <button class="btn btn-danger" id="removeLike"><i class="fas fa-thumbs-down"></i></button>
+                <span id="likesTotal" class="btn btn-danger disabled">{{ photo.likes }}</span>
+            </div>
+
+        </div>
         <div class="card-body">
             <h5 class="card-title">Добавлено: {{ photo.author }},  {{ photo.created_at }}</h5>
             <p class="card-text"><strong>Описание: </strong>{{ photo.description }}</p>
         </div>
+        <button type="button" class="btn btn-primary w-50 ml-auto mr-auto" data-toggle="modal" data-target="#commentModal">
+            Добавить комментарий
+        </button>
         <div class="ml-auto mr-auto card-footer w-50">
-            <div class="list-group ">
+            <div class="list-group" id="commentsList">
                 {% for comment in photo.comments.all %}
                     <div class="list-group-item">
                         <div class="d-flex w-100 justify-content-between">
+{#                            <span hidden id="commentId_{{ comment.id }}">{{ comment.id }}</span>#}
+
                             <h5 class="mb-1">{{ comment.author }}</h5>
                             <small>{{ comment.added }}</small>
+
                         </div>
                         <p class="mb-1 text-left">{{ comment.text }}</p>
+                        <button class="delete btn btn-danger" id={{ comment.id }}><i class="fas fa-trash-alt"></i></button>
                     </div>
 
                 {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Добавить комментарий</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        {% csrf_token %}
+                        <label for="commentText">Комментарий</label>
+                        <input type="hidden" value="{{ photo.pk }}" id="commentPhoto">
+                        <input type="hidden" value="{{ request.user.id }}" id="commentAuthor">
+                        <textarea class="form-control" id="commentText" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="commentAdd">Добавить комментарий</button>
+                </div>
             </div>
         </div>
     </div>

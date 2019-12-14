@@ -1,0 +1,72 @@
+[
+{
+  "model": "webapp.photo",
+  "pk": 1,
+  "fields": {
+    "photo": "photos/galley-5.jpg",
+    "description": "\u042d\u0442\u043e \u043c\u044b \u043d\u0430 \u044d\u043a\u0437\u0430\u043c\u0435\u043d\u0435",
+    "created_at": "2019-12-14T06:49:34.437Z",
+    "likes": 1,
+    "author": 1
+  }
+},
+{
+  "model": "webapp.photo",
+  "pk": 2,
+  "fields": {
+    "photo": "photos/parse.jpg",
+    "description": "\u0432\u0441\u0451 \u043f\u0430\u0440\u0441\u0438\u043c",
+    "created_at": "2019-12-14T12:40:30.845Z",
+    "likes": 0,
+    "author": 1
+  }
+},
+{
+  "model": "webapp.comment",
+  "pk": 1,
+  "fields": {
+    "text": "\u041d\u0435 \u0436\u0430\u043b\u0443\u0439\u0441\u044f",
+    "photo": 1,
+    "author": 1,
+    "added": "2019-12-14T07:16:08.047Z"
+  }
+},
+{
+  "model": "webapp.comment",
+  "pk": 2,
+  "fields": {
+    "text": "\u0431\u043e\u0436\u0435\u043d\u044c\u043a\u0430, \u043f\u043e\u043c\u043e\u0433\u0438 \u043d\u0430\u043c , \u0433\u0440\u0435\u0448\u043d\u044b\u043c",
+    "photo": 1,
+    "author": 1,
+    "added": "2019-12-14T09:56:10.428Z"
+  }
+},
+{
+  "model": "webapp.comment",
+  "pk": 3,
+  "fields": {
+    "text": "\u0431\u043b\u0430\u0431\u043b\u0430 \u0431\u043b\u0430",
+    "photo": 1,
+    "author": 1,
+    "added": "2019-12-14T12:24:03.602Z"
+  }
+},
+{
+  "model": "webapp.comment",
+  "pk": 4,
+  "fields": {
+    "text": "\u041c\u0434\u0430",
+    "photo": 2,
+    "author": 1,
+    "added": "2019-12-14T12:40:36.850Z"
+  }
+},
+{
+  "model": "webapp.like",
+  "pk": 14,
+  "fields": {
+    "user": 1,
+    "photo": 1
+  }
+}
+]

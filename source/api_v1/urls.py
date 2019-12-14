@@ -4,7 +4,8 @@ from rest_framework.authtoken.views import obtain_auth_token
 from api_v1 import views
 
 router = routers.DefaultRouter()
-# router.register(r'quotes', views.QuoteViewSet)
+router.register(r'comments', views.CommentViewSet)
+router.register(r'likes', views.LikeViewSet)
 
 app_name='api_v1'
 

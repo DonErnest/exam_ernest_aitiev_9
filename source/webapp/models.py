@@ -5,7 +5,7 @@ class Photo(models.Model):
     photo = models.ImageField(null=False, blank=False, upload_to='photos', verbose_name='Фотография')
     description = models.CharField(max_length=150, null=False, blank=False, verbose_name='Подпись')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Добавлено')
-    likes = models.PositiveIntegerField(default=0, verbose_name='Лайки')
+    likes = models.IntegerField(default=0, verbose_name='Лайки')
     author = models.ForeignKey(User, null=False, on_delete=models.CASCADE, blank=False,verbose_name='Автор')
 
     def __str__(self):

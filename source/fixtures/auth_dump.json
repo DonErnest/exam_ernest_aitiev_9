@@ -1,0 +1,20 @@
+[
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$ZAZ399G4LqVf$GICmTPKCuGdqmcyRYcR5Hy0tF6jgmGEE3GTebtd991o=",
+    "last_login": "2019-12-14T06:40:31.258Z",
+    "is_superuser": true,
+    "username": "ernest_aitiev",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2019-12-13T07:17:31.035Z",
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]

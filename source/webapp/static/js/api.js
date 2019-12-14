@@ -1,5 +1,20 @@
 const baseUrl = 'http://localhost:8000/api/v1/';
 
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
 
 function getFullPath(path) {
@@ -8,123 +23,158 @@ function getFullPath(path) {
     return baseUrl + path + '/';
 }
 
-function makeRequest(path, method, auth=true, data=null) {
+function makeRequest(path, method, data=null) {
     let settings = {
         url: getFullPath(path),
         method: method,
-        dataType: 'json'
+        dataType: 'json',
+        headers: {'X-CSRFToken': getCookie('csrftoken')},
     };
     if (data) {
         settings['data'] = JSON.stringify(data);
         settings['contentType'] = 'application/json';
     }
-    if (auth) {
-        settings.headers = {'Authorization': 'Token ' + getToken()};
-    }
     return $.ajax(settings);
 }
 
-function saveToken(token) {
-    localStorage.setItem('authToken', token);
-}
+function setUpCommentAdd() {
+    commentAdd.on('click', function (event) {
+        event.preventDefault();
+        data = {
+            'text': commentText.val(),
+            'author': commentAuthor.val(),
+            'photo': commentPhoto.val(),
+        };
+        makeRequest('comments/', 'post', data).done(function(data, status, response) {
+        console.log('Comment added');
+        commentModal.modal('hide')
 
-function getToken() {
-    return localStorage.getItem('authToken');
-}
-
-function removeToken() {
-    localStorage.removeItem('authToken');
-}
-
-function logIn(username, password) {
-    const credentials = {username, password};
-    let request = makeRequest('login', 'post', false, credentials);
-    request.done(function(data, status, response) {
-        console.log('Received token');
-        saveToken(data.token);
-        checkAuth()
     }).fail(function(response, status, message) {
-        console.log('Could not get token');
+        console.log('Could not add comment');
+        console.log(response);
+    });
+    })
+}
+
+function setUpLikeAdd() {
+    addLike.on('click', function(event) {
+        event.preventDefault();
+        data = {
+            'user': commentAuthor.val(),
+            'photo': image.attr('data-info')
+        };
+        makeRequest('likes/', 'post', data).done (function(data, status, response) {
+        console.log('Like added');
+        getLikesTotal();
+
+    }).fail(function(response, status, message) {
+        console.log('Could not like');
+        console.log(response);
+    });
+    })
+}
+
+
+
+
+function setUpRemoveLike() {
+    removeLike.on('click', function(event) {
+        event.preventDefault();
+        data = {
+            'user': commentAuthor.val(),
+            'photo': image.attr('data-info')
+        };
+        makeRequest(`likes/${image.attr('data-info')}`, 'delete', data).done (function(data, status, response) {
+            console.log('Like removed');
+            getLikesTotal();
+
+        }).fail(function(response, status, message) {
+            console.log('Could not remove like');
+            console.log(response);
+        });
+        checkLike();
+    })
+}
+
+function getLikesTotal() {
+    let likesList = makeRequest('likes', 'get').done(function (data, status, response) {
+        console.log('List of likes received');
+        console.log(likesList);
+        likesTotal.text(data.length);
+    }).fail(function (response, status, message) {
+        console.log('Could not get list of likes');
         console.log(response);
     });
 }
 
-function logOut() {
-    let request = makeRequest('logout', 'post', true);
-    request.done(function(data, status, response) {
-        console.log('Cleaned token');
-        removeToken();
-        enterLink.removeClass('d-none');
-        exitLink.addClass('d-none');
-    }).fail(function(response, status, message) {
-        console.log('Could not clean token');
-        console.log(response.responseText);
-    });
-}
-let logInForm, homeLink, enterLink, exitLink, formSubmit, formTitle, content, formModal,
-    usernameInput, passwordInput
+// function checkLike() {
+//     let likesList = makeRequest('likes', 'get').done(function (data, status, response) {
+//         console.log('List of likes received');
+//         console.log(data);
+//         if (data) {
+//             for (let i = 0; i < data.length; i++) {
+//                 if (data[i].user.toString() === commentAuthor.val().toString()) {
+//                     addLike.hide();
+//                     removeLike.show();
+//                 } else {
+//                     removeLike.hide();
+//                     addLike.show();
+//                 }
+//             }
+//         } else {
+//             removeLike.hide();
+//             addLike.show();
+//         }
+//
+//     }).fail(function (response, status, message) {
+//         console.log('Could not get list of likes');
+//         console.log(response);
+//     });
+// }
 
-function setUpGlobalVars() {
-    logInForm = $('#log_in_form');
-    homeLink = $('#home_link');
-    enterLink = $('#enter_link');
-    exitLink = $('#exit_link');
-    formSubmit = $('#form_submit');
-    formTitle = $('#form_title');
-    content = $('#content');
-    formModal = $('#form_modal');
-    usernameInput = $('#username_input');
-    passwordInput = $('#password_input');
-}
-
-
-function checkAuth() {
-    let token = getToken();
-    if(token) {
-        enterLink.addClass('d-none');
-        exitLink.removeClass('d-none');
-    } else {
-        enterLink.removeClass('d-none');
-        exitLink.addClass('d-none');
+function setUpDeleteComment(){
+    let deleteButtons = commentList.find('.delete');
+    console.log(deleteButtons);
+    for (let i = 0; i < deleteButtons.length; i++) {
+        let button =  $(deleteButtons[i]);
+        button.on('click', function(event){
+            event.preventDefault();
+            makeRequest(`comments/${button.attr('id')}`, 'delete').done(function(data, status, response) {
+                console.log('Comment deleted');
+            }).fail(function(response, status, message) {
+                console.log('Could not delete comment');
+                console.log(response);
+            });
+        })
     }
 }
 
-function setUpAuth() {
-    logInForm.on('submit', function(event) {
-        event.preventDefault();
-        logIn(usernameInput.val(), passwordInput.val());
-    });
 
-    enterLink.on('click', function(event) {
-        event.preventDefault();
-        logInForm.removeClass('d-none');
-        // quoteForm.addClass('d-none');
-        formTitle.text('Войти');
-        formSubmit.text('Войти');
-        formSubmit.off('click');
-        formSubmit.on('click', function(event) {
-            logInForm.submit();
-            formModal.modal("hide");
-        });
-    });
 
-    exitLink.on('click', function(event) {
-        event.preventDefault();
-        logOut();
-    });
+let commentModal, commentText, commentAuthor, commentAdd, commentList, commentPhoto, image, likesTotal, dislikesTotal, addLike, removeLike;
+
+function setUpGlobalVars() {
+    image = $('#photo');
+    commentModal = $('#commentModal');
+    commentAuthor = $('#commentAuthor');
+    commentPhoto = $('#commentPhoto');
+    commentText = $('#commentText');
+    commentAdd = $('#commentAdd');
+    likesTotal = $('#likesTotal');
+    dislikesTotal = $('#dislikesTotal');
+    addLike = $('#addLike');
+    removeLike = $('#removeLike');
+    commentList = $('#commentsList');
 }
+
 
 
 $(document).ready(function() {
     setUpGlobalVars();
-    setUpAuth();
-    checkAuth();
+    // checkLike();
+    setUpLikeAdd();
+    setUpRemoveLike();
+    setUpCommentAdd();
+    setUpDeleteComment();
 });
-
-
-//
-// $(document).ready(function() {
-//     let token = getToken();
-//     if (!token) logIn('ernest_aitiev', '2091');
-// });
 
